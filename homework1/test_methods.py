@@ -79,7 +79,16 @@ class TestCheckWinner(unittest.TestCase):
             ['O', 'X', 'O'],
             ['X', 'O', 'X']
         ]
-        self.assertEqual(abs(-42), 42, "Should be absolute value of a number")
+        self.assertEqual(game.check_tie(), True, "Should be True")
+
+    def test_not_tie(self):
+        game = TicTacGame()
+        game.board = [
+            ['O', 'X', 3],
+            ['O', 'X', 'O'],
+            ['X', 'O', 'X']
+        ]
+        self.assertEqual(game.check_tie(), False, "Should be False")
 
 
 if __name__ == "__main__":
