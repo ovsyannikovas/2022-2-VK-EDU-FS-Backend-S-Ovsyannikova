@@ -75,11 +75,11 @@ class TicTacGame:
             try:
                 cell_coords = self.validate_input(cell)
             except (ExceptionCellType, ExceptionCellValue, ExceptionCellOccupied) as exc:
-                if exc == ExceptionCellType:
+                if isinstance(exc, ExceptionCellType):
                     print('\n\tЗначение клетки не является целым числом!')
-                elif exc == ExceptionCellValue:
+                elif isinstance(exc, ExceptionCellValue):
                     print('\n\tЗначение клетки выходит за пределы допустимых значений!')
-                elif exc == ExceptionCellOccupied:
+                elif isinstance(exc, ExceptionCellOccupied):
                     print('\n\tКлетка занята!')
                 sleep(2)
                 continue
