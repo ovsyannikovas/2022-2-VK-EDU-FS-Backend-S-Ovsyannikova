@@ -49,12 +49,14 @@ class TicTacGame:
         if not cell.isdigit():
             raise ExceptionCellType
 
+        cell_int = int(cell)
+
         # if not in range
-        if not 1 <= int(cell) <= 9:
+        if not 1 <= cell_int <= 9:
             raise ExceptionCellValue
 
         # if the cell is occupied
-        if self.board[self.cell_coords_dict[int(cell)][0]][self.cell_coords_dict[int(cell)][1]] != int(cell):
+        if self.board[self.cell_coords_dict[cell_int][0]][self.cell_coords_dict[cell_int][1]] != cell_int:
             raise ExceptionCellOccupied
 
     def start_game(self):
@@ -81,7 +83,8 @@ class TicTacGame:
                 sleep(2)
                 continue
 
-            self.board[self.cell_coords_dict[int(cell)][0]][self.cell_coords_dict[int(cell)][1]] = sign
+            cell_int = int(cell)
+            self.board[self.cell_coords_dict[cell_int][0]][self.cell_coords_dict[cell_int][1]] = sign
 
             win = self.check_winner(sign)
             if win or self.check_tie():
