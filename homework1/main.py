@@ -40,10 +40,11 @@ class TicTacGame:
             ['\t ' + ' | '.join(map(str, self.board[i])) for i in range(3)])
         print('\n\tИгра крестики - нолики\n', table)
 
-    def validate_input(self, cell):
+    def validate_input(self, cell) -> tuple:
         """
         Валидация введенного пользователем значения клетки.
         :param cell: Значение клетки
+        :return: Кортеж, состоящий из координат клетки.
         """
         # if not digit
         if not cell.isdigit():
@@ -56,8 +57,11 @@ class TicTacGame:
             raise ExceptionCellValue
 
         # if the cell is occupied
-        if self.board[self.cell_coords_dict[cell_int][0]][self.cell_coords_dict[cell_int][1]] != cell_int:
+        cell_coords = self.cell_coords_dict[cell_int]
+        if self.board[cell_coords[0]][cell_coords[1]] != cell_int:
             raise ExceptionCellOccupied
+
+        return cell_coords
 
     def start_game(self):
         """
@@ -69,22 +73,18 @@ class TicTacGame:
             cell = input(f'\n\tВыберите клетку, чтобы поставить "{sign}": ')
 
             try:
-                self.validate_input(cell)
-            except ExceptionCellType:
-                print('\n\tЗначение клетки не является целым числом!')
-                sleep(2)
-                continue
-            except ExceptionCellValue:
-                print('\n\tЗначение клетки выходит за пределы допустимых значений!')
-                sleep(2)
-                continue
-            except ExceptionCellOccupied:
-                print('\n\tКлетка занята!')
+                cell_coords = self.validate_input(cell)
+            except (ExceptionCellType, ExceptionCellValue, ExceptionCellOccupied) as exc:
+                if exc == ExceptionCellType:
+                    print('\n\tЗначение клетки не является целым числом!')
+                elif exc == ExceptionCellValue:
+                    print('\n\tЗначение клетки выходит за пределы допустимых значений!')
+                elif exc == ExceptionCellOccupied:
+                    print('\n\tКлетка занята!')
                 sleep(2)
                 continue
 
-            cell_int = int(cell)
-            self.board[self.cell_coords_dict[cell_int][0]][self.cell_coords_dict[cell_int][1]] = sign
+            self.board[cell_coords[0]][cell_coords[1]] = sign
 
             win = self.check_winner(sign)
             if win or self.check_tie():
