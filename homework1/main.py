@@ -134,6 +134,8 @@ class TicTacGame:
                 brd[0][2] == brd[1][1] == brd[2][0] == sign:
             return True
 
+        return False
+
 
 if __name__ == '__main__':
     game = TicTacGame()
