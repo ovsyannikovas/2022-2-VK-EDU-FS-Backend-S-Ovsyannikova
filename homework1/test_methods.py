@@ -5,22 +5,11 @@ from main import TicTacGame, ExceptionCellType, ExceptionCellValue, ExceptionCel
 class TestValidationInput(unittest.TestCase):
     def test_not_digit(self):
         game = TicTacGame()
-        try:
-            self.assert_(game.validate_input('test'), "Should be ExceptionCellType")
-        except ExceptionCellType:
-            pass
+        self.assertRaises(ExceptionCellType, game.validate_input, 'test')
 
     def test_not_in_range(self):
         game = TicTacGame()
-        try:
-            self.assert_(game.validate_input('0'), "Should be ExceptionCellValue")
-        except ExceptionCellValue:
-            pass
-
-        try:
-            self.assert_(game.validate_input('10'), "Should be ExceptionCellValue")
-        except ExceptionCellValue:
-            pass
+        self.assertRaises(ExceptionCellValue, game.validate_input, '0')
 
     def test_occupied(self):
         game = TicTacGame()
@@ -29,22 +18,10 @@ class TestValidationInput(unittest.TestCase):
             [4, 5, 6],
             [7, 8, 9]
         ]
-        try:
-            self.assert_(game.validate_input('1'), "Should be ExceptionCellOccupied")
-        except ExceptionCellOccupied:
-            pass
+        self.assertRaises(ExceptionCellOccupied, game.validate_input, '1')
 
 
 class TestCheckWinner(unittest.TestCase):
-    # def test_x_row(self):
-    #     self.assertEqual(abs(-42), 42, "Should be absolute value of a number")
-    #
-    # def test_x_col(self):
-    #     self.assertEqual(abs(-42), 42, "Should be absolute value of a number")
-    #
-    # def test_x_diag(self):
-    #     self.assertEqual(abs(-42), 42, "Should be absolute value of a number")
-
     def test_o_row(self):
         game = TicTacGame()
         game.board = [
