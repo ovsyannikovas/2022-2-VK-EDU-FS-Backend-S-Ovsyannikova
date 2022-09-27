@@ -1,1 +1,1 @@
-# fullstack_vk_homeworks
+# backend_vk_homeworks
