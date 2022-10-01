@@ -10,7 +10,7 @@ class TestCheckWinner(unittest.TestCase):
             [4, 5, 6],
             [7, 8, 9]
         ]
-        self.assertEqual(game.check_winner('O'), True, "Should be True")
+        self.assert_(game.check_winner('O'))
 
     def test_o_col(self):
         game = TicTacGame()
@@ -19,7 +19,7 @@ class TestCheckWinner(unittest.TestCase):
             [4, 'O', 6],
             [7, 'O', 9]
         ]
-        self.assertEqual(game.check_winner('O'), True, "Should be True")
+        self.assert_(game.check_winner('O'))
 
     def test_o_diag(self):
         game = TicTacGame()
@@ -28,7 +28,8 @@ class TestCheckWinner(unittest.TestCase):
             [4, 'O', 6],
             [7, 8, 'O']
         ]
-        self.assertEqual(game.check_winner('O'), True, "Should be True")
+        self.assert_(game.check_winner('O'))
+    # обычный assert
 
     def test_false(self):
         game = TicTacGame()
@@ -37,7 +38,7 @@ class TestCheckWinner(unittest.TestCase):
             [4, 5, 6],
             [7, 8, 'O']
         ]
-        self.assertEqual(game.check_winner('O'), False, "Should be False")
+        self.assertFalse(game.check_winner('O'))
 
 
 class TestCheckTie(unittest.TestCase):
@@ -48,7 +49,7 @@ class TestCheckTie(unittest.TestCase):
             ['O', 'X', 'O'],
             ['X', 'O', 'X']
         ]
-        self.assertEqual(game.check_tie(), True, "Should be True")
+        self.assert_(game.check_tie())
 
     def test_not_tie(self):
         game = TicTacGame()
@@ -57,7 +58,7 @@ class TestCheckTie(unittest.TestCase):
             ['O', 'X', 'O'],
             ['X', 'O', 'X']
         ]
-        self.assertEqual(game.check_tie(), False, "Should be False")
+        self.assertFalse(game.check_tie())
 
 
 class TestValidationInput(unittest.TestCase):

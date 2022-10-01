@@ -1,23 +1,6 @@
 import os
 from time import sleep
-
-
-class ExceptionCellType(Exception):
-    """
-    Пользовательское исключение: ошибка типа "Значение клетки не является целым числом!"
-    """
-
-
-class ExceptionCellValue(Exception):
-    """
-    Пользовательское исключение: ошибка типа "Значение клетки не является целым числом!"
-    """
-
-
-class ExceptionCellOccupied(Exception):
-    """
-    Пользовательское исключение: ошибка типа "Клетка занята!"
-    """
+from exceptions import ExceptionCellType, ExceptionCellValue, ExceptionCellOccupied
 
 
 class TicTacGame:
@@ -36,8 +19,10 @@ class TicTacGame:
         Выводит поле игры в виде таблицы 3х3.
         """
         os.system('cls')
-        table = '\n' + '\n\t---+---+---\n'.join(
-            ['\t ' + ' | '.join(map(str, self.board[i])) for i in range(3)])
+        rows = []
+        for i in range(3):
+            rows.append('\t ' + ' | '.join(map(str, self.board[i])))
+        table = '\n' + '\n\t---+---+---\n'.join(rows)
         print('\n\tИгра крестики - нолики\n', table)
 
     def validate_input(self, cell) -> tuple:
@@ -75,12 +60,7 @@ class TicTacGame:
             try:
                 cell_coords = self.validate_input(cell)
             except (ExceptionCellType, ExceptionCellValue, ExceptionCellOccupied) as exc:
-                if isinstance(exc, ExceptionCellType):
-                    print('\n\tЗначение клетки не является целым числом!')
-                elif isinstance(exc, ExceptionCellValue):
-                    print('\n\tЗначение клетки выходит за пределы допустимых значений!')
-                elif isinstance(exc, ExceptionCellOccupied):
-                    print('\n\tКлетка занята!')
+                print(exc)
                 sleep(2)
                 continue
 
@@ -119,19 +99,15 @@ class TicTacGame:
         """
         brd = self.board
 
-        # check rows
+        # check rows and cols
         for i in range(3):
-            if brd[i][0] == brd[i][1] == brd[i][2] == sign:
-                return True
-
-        # check cols
-        for j in range(3):
-            if brd[0][j] == brd[1][j] == brd[2][j] == sign:
+            if (brd[i][0] == brd[i][1] == brd[i][2] == sign or
+                    brd[0][i] == brd[1][i] == brd[2][i] == sign):
                 return True
 
         # check diags
-        if brd[0][0] == brd[1][1] == brd[2][2] == sign or \
-                brd[0][2] == brd[1][1] == brd[2][0] == sign:
+        if (brd[0][0] == brd[1][1] == brd[2][2] == sign or
+                brd[0][2] == brd[1][1] == brd[2][0] == sign):
             return True
 
         return False
