@@ -22,8 +22,8 @@ class TicTacGame:
         rows = []
         for i in range(3):
             rows.append('\t ' + ' | '.join(map(str, self.board[i])))
-        table = '\n' + '\n\t---+---+---\n'.join(rows)
-        print('\n\tИгра крестики - нолики\n', table)
+        table = '\n\t---+---+---\n'.join(rows)
+        print('\n\tИгра крестики - нолики\n\n', table)
 
     def validate_input(self, cell) -> tuple:
         """
