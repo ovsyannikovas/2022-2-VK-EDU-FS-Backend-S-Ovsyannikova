@@ -16,10 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import include
 from django.urls import path
-from mainpage.views import homepage
+from chats.views import homepage
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('mainpage.urls')),
+    path('', homepage, name="home"),
     path('chats/', include('chats.urls')),
 ]

@@ -1,11 +1,16 @@
-from django.http import JsonResponse, HttpResponseNotAllowed
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
 from datetime import datetime
+from django.shortcuts import render
 
 
 @require_GET
-@csrf_exempt
+def homepage(request):
+    return render(request, "index.html", content_type="text/html")
+
+
+@require_GET
 def chat_list(request):
     chats = [
         {
@@ -47,7 +52,6 @@ def create_chat(request):
         'name': request.GET['name'],
         'content': request.GET['content']
     }]
-    chats.sort(key=lambda x: x['id'])
     return JsonResponse(chats, safe=False)
 
 
@@ -72,7 +76,7 @@ def chat_page(request, name):
             'id': 3,
             'name': 'Me',
             'content': request.GET['content'],
-            "date": datetime.now().strftime('%Y-%m-%d'),
+            'date': datetime.now().strftime('%Y-%m-%d'),
             'time': datetime.now().strftime('%H:%M')
         })
-    return JsonResponse(messages, safe=False)
+    return HttpResponse(content=f"Страница чата {name}")
