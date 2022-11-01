@@ -4,55 +4,90 @@ from django.views.decorators.http import require_http_methods, require_GET, requ
 from datetime import datetime
 from django.shortcuts import render
 
+from chats.models import Chat, Category, User
+
 
 @require_GET
 def homepage(request):
     return render(request, "index.html", content_type="text/html")
 
 
+def get_chats_json(chats):
+    chat_list = []
+    for chat in chats:
+        chat_list.append({
+            'id': chat.id,
+            'title': chat.title,
+            'description': chat.description,
+            'author': str(chat.author),
+            'category': str(chat.category),
+        })
+    response = {'chats': chat_list}
+    return response
+
+
 @require_GET
 def chat_list(request):
-    chats = [
-        {
-            'id': 1,
-            'name': 'Person1',
-            'content': 'Hello World1'
-        },
-        {
-            'id': 2,
-            'name': 'Person2',
-            'content': 'Hello World2'
-        },
-        {
-            'id': 3,
-            'name': 'Person3',
-            'content': 'Hello World3'
-        },
-    ]
-    return JsonResponse(chats, safe=False)
+    chats = Chat.objects.all()
+    return JsonResponse(get_chats_json(chats))
 
 
 @require_POST
 @csrf_exempt
 def create_chat(request):
-    chats = [{
-        'id': 1,
-        'name': 'Person1',
-        'content': 'Hello World1'
-    }, {
-        'id': 2,
-        'name': 'Person2',
-        'content': 'Hello World2'
-    }, {
-        'id': 3,
-        'name': 'Person3',
-        'content': 'Hello World3'
-    }, {
-        'id': 4,
-        'name': request.GET['name'],
-        'content': request.GET['content']
-    }]
-    return JsonResponse(chats, safe=False)
+    Chat.objects.create(
+        title=request.GET['title'],
+        description=request.GET['description'],
+        author=User.objects.get(username=request.GET['username']),
+        category=Category.objects.get(pk=request.GET['category_id']),
+    )
+    chats = Chat.objects.all()
+    return JsonResponse(get_chats_json(chats))
+
+
+@require_POST
+@csrf_exempt
+def delete_chat(request):
+    chat_id = request.GET['id']
+    chat = Chat.objects.get(pk=chat_id)
+    chat.delete()
+    chats = Chat.objects.all()
+    return JsonResponse(get_chats_json(chats))
+
+
+@require_GET
+def get_info_chat(request, chat_id):
+    chat = Chat.objects.get(pk=chat_id)
+    response = {
+        'id': chat.pk,
+        'title': chat.title,
+        'description': chat.description,
+        'author': str(chat.author),
+        'category': str(chat.category),
+    }
+    return JsonResponse(response)
+
+
+@require_GET
+def get_user_chats(request, user_id):
+    chats = Chat.objects.filter(author=User.objects.get(pk=user_id))
+    return JsonResponse(get_chats_json(chats))
+
+
+@require_POST
+@csrf_exempt
+def edit_chat(request, chat_id):
+    chat = Chat.objects.get(pk=chat_id)
+    chat.title = request.GET['title'] if 'title' in request.GET else chat.title
+    chat.description = request.GET['description'] if 'description' in request.GET else chat.description
+    response = {
+        'id': chat.pk,
+        'title': chat.title,
+        'description': chat.description,
+        'author': str(chat.author),
+        'category': str(chat.category),
+    }
+    return JsonResponse(response)
 
 
 @require_http_methods(['GET', 'POST'])
