@@ -21,7 +21,7 @@ def get_chats_json(chats):
             'id': chat.id,
             'title': chat.title,
             'description': chat.description,
-            # 'members': chat.members,
+            'members': [member.username for member in chat.members.all()],
         })
     response = {'chats': chat_list}
     return response
@@ -36,13 +36,11 @@ def chat_list(request):
 @require_POST
 @csrf_exempt
 def create_chat(request):
-    # request_data = json.loads(request.body)
-    # print(request_data)
-    # Chat.objects.create(
-    #     title=request.GET['title'],
-    #     description=request.GET['description'],
-    #     author=User.objects.get(username=request.GET['username']),
-    # )
+    request_data = json.loads(request.body)
+    Chat.objects.create(
+        title=request_data['title'],
+        description=request_data['description'],
+    )
     chats = Chat.objects.all()
     return JsonResponse(get_chats_json(chats))
 
@@ -50,8 +48,8 @@ def create_chat(request):
 # @require_DELETE
 @csrf_exempt
 def delete_chat(request):
-    chat_id = request.GET['id']
-    chat = Chat.objects.get(pk=chat_id)
+    request_data = json.loads(request.body)
+    chat = Chat.objects.get(pk=request_data['id'])
     chat.delete()
     chats = Chat.objects.all()
     return JsonResponse(get_chats_json(chats))
