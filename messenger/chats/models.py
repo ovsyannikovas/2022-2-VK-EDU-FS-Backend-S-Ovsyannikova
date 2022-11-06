@@ -5,7 +5,7 @@ from users.models import User
 class Chat(models.Model):
     title = models.CharField(max_length=100, verbose_name="Заголовок")
     description = models.CharField(max_length=255, null=True, verbose_name="Описание")
-    members = models.ManyToManyField(User, blank=True, default=False, verbose_name="Участники", related_name='members')
+    members = models.ManyToManyField(User, blank=True, verbose_name="Участники", related_name='members')
 
     class Meta:
         verbose_name = 'Чат'
