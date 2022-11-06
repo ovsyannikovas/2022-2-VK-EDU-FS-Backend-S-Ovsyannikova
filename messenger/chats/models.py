@@ -22,8 +22,9 @@ class Message(models.Model):
                              related_name='user')
     content = models.CharField(max_length=255, verbose_name="Контент")
     time_create = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")
+    mark = models.BooleanField(default=False, verbose_name="Пометка прочитанности")
 
     class Meta:
         verbose_name = 'Сообщение'
         verbose_name_plural = 'Сообщения'
-        ordering = ['-time_create']
+        ordering = ['time_create']

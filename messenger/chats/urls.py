@@ -4,13 +4,13 @@ from . import views
 
 urlpatterns = [
     path('', views.chat_list, name='chat_list'),
-    # path('chat_page/<chat_id>', views.chat_page),
-    path('create_chat/', views.create_chat, name='create_chat'),
-    path('delete_chat/', views.delete_chat, name='delete_chat'),
-    path('add_member/', views.delete_chat, name='add_member'),
-    path('delete_member/', views.delete_chat, name='delete_member'),
-    path('edit/', views.edit_chat, name='edit_chat'),
-    path('info/', views.get_info_chat, name='chat_info'),
-    path('info_user/', views.get_user_chats, name='info_user'),
-    path('messages_chat/', views.get_info_chat, name='chat_info'),
+    path('create', views.create_chat, name='create_chat'),
+    path('delete', views.delete_chat, name='delete_chat'),
+    path('edit_chat', views.edit_chat, name='edit_chat'),
+    path('info', views.chat_info, name='chat_info'),
+    path('message/send', views.send_message, name='send_message'),
+    path('messages', views.chat_messages, name='chat_messages'),
+    path('message/mark_read', views.mark_read, name='mark_read'),
+    path('message/edit', views.edit_message, name='edit_message'),
+    path('message/delete', views.delete_message, name='delete_message'),
 ]
