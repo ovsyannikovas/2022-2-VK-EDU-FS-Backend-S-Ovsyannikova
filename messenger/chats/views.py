@@ -1,10 +1,12 @@
+import json
+
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
 from datetime import datetime
 from django.shortcuts import render
 
-from chats.models import Chat, Category, User
+from chats.models import Chat, User
 
 
 @require_GET
@@ -19,8 +21,7 @@ def get_chats_json(chats):
             'id': chat.id,
             'title': chat.title,
             'description': chat.description,
-            'author': str(chat.author),
-            'category': str(chat.category),
+            # 'members': chat.members,
         })
     response = {'chats': chat_list}
     return response
@@ -35,17 +36,18 @@ def chat_list(request):
 @require_POST
 @csrf_exempt
 def create_chat(request):
-    Chat.objects.create(
-        title=request.GET['title'],
-        description=request.GET['description'],
-        author=User.objects.get(username=request.GET['username']),
-        category=Category.objects.get(pk=request.GET['category_id']),
-    )
+    # request_data = json.loads(request.body)
+    # print(request_data)
+    # Chat.objects.create(
+    #     title=request.GET['title'],
+    #     description=request.GET['description'],
+    #     author=User.objects.get(username=request.GET['username']),
+    # )
     chats = Chat.objects.all()
     return JsonResponse(get_chats_json(chats))
 
 
-@require_POST
+# @require_DELETE
 @csrf_exempt
 def delete_chat(request):
     chat_id = request.GET['id']
@@ -90,28 +92,3 @@ def edit_chat(request, chat_id):
     return JsonResponse(response)
 
 
-@require_http_methods(['GET', 'POST'])
-@csrf_exempt
-def chat_page(request, name):
-    messages = [{
-        'id': 1,
-        'name': 'Me',
-        'content': 'Hello World',
-        'date': '2022-10-11',
-        'time': '9:46'
-    }, {
-        'id': 2,
-        'name': name,
-        'content': 'Hello Python',
-        'date': '2022-10-11',
-        'time': '9:50'
-    }]
-    if request.method == 'POST':
-        messages.append({
-            'id': 3,
-            'name': 'Me',
-            'content': request.GET['content'],
-            'date': datetime.now().strftime('%Y-%m-%d'),
-            'time': datetime.now().strftime('%H:%M')
-        })
-    return HttpResponse(content=f"Страница чата {name}")
