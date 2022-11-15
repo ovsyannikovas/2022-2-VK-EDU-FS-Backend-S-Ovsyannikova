@@ -12,6 +12,25 @@ class Chat(models.Model):
         verbose_name_plural = 'Чаты'
         ordering = ['id']
 
+    def get_members(self):
+        return [member.pk for member in self.members.all()]
+        # members = self.members.all()
+        # names = [f'{member.pk} - {member.username}' for member in members]
+        # return names
+
+    def get_messages(self):
+        messages = Message.objects.filter(chat=self)
+        message_list = []
+        for message in messages:
+            message_list.append({
+                "id": message.pk,
+                "user": str(message.user),
+                "content": message.content,
+                "time create": str(message.time_create),
+                "mark": message.mark
+            })
+        return message_list
+
     def __str__(self):
         return self.title
 
