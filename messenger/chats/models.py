@@ -13,10 +13,10 @@ class Chat(models.Model):
         ordering = ['id']
 
     def get_members(self):
-        return [member.pk for member in self.members.all()]
-        # members = self.members.all()
-        # names = [f'{member.pk} - {member.username}' for member in members]
-        # return names
+        # return [member.pk for member in self.members.all()]
+        members = self.members.all()
+        names = [f'{member.username}' for member in members]
+        return names
 
     def get_messages(self):
         messages = Message.objects.filter(chat=self)
