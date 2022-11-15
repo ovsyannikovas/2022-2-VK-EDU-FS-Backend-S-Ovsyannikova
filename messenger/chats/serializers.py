@@ -13,8 +13,8 @@ class ChatListSerializer(serializers.ModelSerializer):
 
 
 class ChatSerializer(serializers.ModelSerializer):
-    members = serializers.MultipleChoiceField(source='get_members',
-                                              choices=[(choice.pk, choice.username) for choice in User.objects.all()])
+    members = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(),
+                                                 many=True)
     messages = serializers.ListField(source='get_messages', read_only=True)
 
     class Meta:
@@ -32,7 +32,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
 class ChatSendMessageSerializer(serializers.ModelSerializer):
     chat = serializers.PrimaryKeyRelatedField(queryset=Chat.objects.all(),
-                                                 many=False)
+                                              many=False)
 
     def get_chat_id(self, message):
         print(message.chat.pk)
