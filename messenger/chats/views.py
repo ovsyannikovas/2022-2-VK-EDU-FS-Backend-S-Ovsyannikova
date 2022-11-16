@@ -19,9 +19,8 @@ class ChatList(ListCreateAPIView):
 
 class ChatView(RetrieveUpdateDestroyAPIView):
     serializer_class = ChatSerializer
-
-    def get_object(self):
-        return get_object_or_404(Chat, pk=self.kwargs['pk'])
+    lookup_field = 'pk'
+    queryset = Chat.objects.all()
 
 
 class ChatSendMessage(ListCreateAPIView):
@@ -34,6 +33,6 @@ class ChatSendMessage(ListCreateAPIView):
 
 class MessageView(RetrieveUpdateDestroyAPIView):
     serializer_class = MessageSerializer
+    lookup_field = 'pk'
+    queryset = Message.objects.all()
 
-    def get_object(self):
-        return get_object_or_404(Message, pk=self.kwargs['pk'])

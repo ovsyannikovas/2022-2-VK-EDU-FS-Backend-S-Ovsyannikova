@@ -6,9 +6,8 @@ from users.serializers import UserInfoSerializer, UsersListSerializer
 
 class UserView(RetrieveAPIView):
     serializer_class = UserInfoSerializer
-
-    def get_object(self):
-        return get_object_or_404(User, pk=self.kwargs['pk'])
+    lookup_field = 'pk'
+    queryset = User.objects.all()
 
 
 class UsersList(ListAPIView):
