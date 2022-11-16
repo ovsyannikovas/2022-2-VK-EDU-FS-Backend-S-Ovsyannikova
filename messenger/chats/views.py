@@ -1,10 +1,10 @@
-from django.http import JsonResponse, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods, require_GET, require_POST
-from datetime import datetime
-from django.shortcuts import render
+from django.views.decorators.http import require_GET
+from django.shortcuts import render, get_object_or_404
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
-from chats.models import Chat, Category, User
+from chats.models import Chat, Message
+
+from chats.serializers import ChatSerializer, ChatListSerializer, MessageSerializer, ChatSendMessageSerializer
 
 
 @require_GET
@@ -12,106 +12,27 @@ def homepage(request):
     return render(request, "index.html", content_type="text/html")
 
 
-def get_chats_json(chats):
-    chat_list = []
-    for chat in chats:
-        chat_list.append({
-            'id': chat.id,
-            'title': chat.title,
-            'description': chat.description,
-            'author': str(chat.author),
-            'category': str(chat.category),
-        })
-    response = {'chats': chat_list}
-    return response
+class ChatList(ListCreateAPIView):
+    serializer_class = ChatListSerializer
+    queryset = Chat.objects.all()
 
 
-@require_GET
-def chat_list(request):
-    chats = Chat.objects.all()
-    return JsonResponse(get_chats_json(chats))
+class ChatView(RetrieveUpdateDestroyAPIView):
+    serializer_class = ChatSerializer
+    lookup_field = 'pk'
+    queryset = Chat.objects.all()
 
 
-@require_POST
-@csrf_exempt
-def create_chat(request):
-    Chat.objects.create(
-        title=request.GET['title'],
-        description=request.GET['description'],
-        author=User.objects.get(username=request.GET['username']),
-        category=Category.objects.get(pk=request.GET['category_id']),
-    )
-    chats = Chat.objects.all()
-    return JsonResponse(get_chats_json(chats))
+class ChatSendMessage(ListCreateAPIView):
+    serializer_class = ChatSendMessageSerializer
+
+    def get_queryset(self):
+        chat = get_object_or_404(Chat, pk=self.kwargs['pk'])
+        return Message.objects.filter(chat=chat)
 
 
-@require_POST
-@csrf_exempt
-def delete_chat(request):
-    chat_id = request.GET['id']
-    chat = Chat.objects.get(pk=chat_id)
-    chat.delete()
-    chats = Chat.objects.all()
-    return JsonResponse(get_chats_json(chats))
+class MessageView(RetrieveUpdateDestroyAPIView):
+    serializer_class = MessageSerializer
+    lookup_field = 'pk'
+    queryset = Message.objects.all()
 
-
-@require_GET
-def get_info_chat(request, chat_id):
-    chat = Chat.objects.get(pk=chat_id)
-    response = {
-        'id': chat.pk,
-        'title': chat.title,
-        'description': chat.description,
-        'author': str(chat.author),
-        'category': str(chat.category),
-    }
-    return JsonResponse(response)
-
-
-@require_GET
-def get_user_chats(request, user_id):
-    chats = Chat.objects.filter(author=User.objects.get(pk=user_id))
-    return JsonResponse(get_chats_json(chats))
-
-
-@require_POST
-@csrf_exempt
-def edit_chat(request, chat_id):
-    chat = Chat.objects.get(pk=chat_id)
-    chat.title = request.GET['title'] if 'title' in request.GET else chat.title
-    chat.description = request.GET['description'] if 'description' in request.GET else chat.description
-    response = {
-        'id': chat.pk,
-        'title': chat.title,
-        'description': chat.description,
-        'author': str(chat.author),
-        'category': str(chat.category),
-    }
-    return JsonResponse(response)
-
-
-@require_http_methods(['GET', 'POST'])
-@csrf_exempt
-def chat_page(request, name):
-    messages = [{
-        'id': 1,
-        'name': 'Me',
-        'content': 'Hello World',
-        'date': '2022-10-11',
-        'time': '9:46'
-    }, {
-        'id': 2,
-        'name': name,
-        'content': 'Hello Python',
-        'date': '2022-10-11',
-        'time': '9:50'
-    }]
-    if request.method == 'POST':
-        messages.append({
-            'id': 3,
-            'name': 'Me',
-            'content': request.GET['content'],
-            'date': datetime.now().strftime('%Y-%m-%d'),
-            'time': datetime.now().strftime('%H:%M')
-        })
-    return HttpResponse(content=f"Страница чата {name}")
