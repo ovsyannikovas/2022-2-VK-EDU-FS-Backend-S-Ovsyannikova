@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.decorators.http import require_GET
 from django.shortcuts import render, get_object_or_404
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
@@ -18,18 +19,18 @@ def login(request):
     return render(request, 'login.html')
 
 
-class ChatList(ListCreateAPIView):
+class ChatList(LoginRequiredMixin, ListCreateAPIView):
     serializer_class = ChatListSerializer
     queryset = Chat.objects.all()
 
 
-class ChatView(RetrieveUpdateDestroyAPIView):
+class ChatView(LoginRequiredMixin, RetrieveUpdateDestroyAPIView):
     serializer_class = ChatSerializer
     lookup_field = 'pk'
     queryset = Chat.objects.all()
 
 
-class ChatSendMessage(ListCreateAPIView):
+class ChatSendMessage(LoginRequiredMixin, ListCreateAPIView):
     serializer_class = ChatSendMessageSerializer
 
     def get_queryset(self):
@@ -37,7 +38,7 @@ class ChatSendMessage(ListCreateAPIView):
         return Message.objects.filter(chat=chat)
 
 
-class MessageView(RetrieveUpdateDestroyAPIView):
+class MessageView(LoginRequiredMixin, RetrieveUpdateDestroyAPIView):
     serializer_class = MessageSerializer
     lookup_field = 'pk'
     queryset = Message.objects.all()
