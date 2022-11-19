@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET
 from django.shortcuts import render, get_object_or_404
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
@@ -8,8 +9,13 @@ from chats.serializers import ChatSerializer, ChatListSerializer, MessageSeriali
 
 
 @require_GET
+@login_required
 def homepage(request):
-    return render(request, "index.html", content_type="text/html")
+    return render(request, "index.html")
+
+
+def login(request):
+    return render(request, 'login.html')
 
 
 class ChatList(ListCreateAPIView):
@@ -35,4 +41,3 @@ class MessageView(RetrieveUpdateDestroyAPIView):
     serializer_class = MessageSerializer
     lookup_field = 'pk'
     queryset = Message.objects.all()
-

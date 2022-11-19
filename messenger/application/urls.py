@@ -16,13 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import include
 from django.urls import path
+from django.contrib.auth import views as auth_views
 
-from chats.views import homepage
 from chats.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', homepage, name="home"),
+    path('', homepage, name='home'),
     path('chats/', include('chats.urls')),
     path('users/', include('users.urls')),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('login/', login, name='login'),
+    path('social-auth/', include('social_django.urls', namespace='social'))
 ]
