@@ -39,16 +39,21 @@ class ChatSendMessage(LoginRequiredMixin, ListCreateAPIView):
         chat = get_object_or_404(Chat, pk=self.kwargs['pk'])
         return Message.objects.filter(chat=chat)
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['chat'] = get_object_or_404(Chat, pk=self.kwargs['pk']).id
+        return context
+
     def get(self, request, *args, **kwargs):
         pk = kwargs['pk']
-        if request.user in get_object_or_404(Message, id=pk).chat.members.all():
+        if request.user in get_object_or_404(Chat, id=pk).members.all():
             return self.list(request, *args, **kwargs)
         else:
             return JsonResponse({'error': 'Only member can read chat messages'}, status=403)
 
     def post(self, request, *args, **kwargs):
         pk = kwargs['pk']
-        if request.user in get_object_or_404(Message, id=pk).chat.members.all():
+        if request.user in get_object_or_404(Chat, id=pk).members.all():
             return self.create(request, *args, **kwargs)
         else:
             return JsonResponse({'error': 'Only member can send messages to chat'}, status=403)

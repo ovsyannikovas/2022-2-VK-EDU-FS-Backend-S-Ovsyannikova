@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
 from chats.models import Chat, Message
@@ -23,7 +24,7 @@ class ChatSerializer(serializers.ModelSerializer):
 
 
 class MessageSerializer(serializers.ModelSerializer):
-    user = serializers.CharField(read_only=True)
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Message
@@ -31,12 +32,11 @@ class MessageSerializer(serializers.ModelSerializer):
 
 
 class ChatSendMessageSerializer(serializers.ModelSerializer):
-    chat = serializers.PrimaryKeyRelatedField(queryset=Chat.objects.all(),
-                                              many=False)
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    chat = serializers.SerializerMethodField()
 
-    def get_chat_id(self, message):
-        print(message.chat.pk)
-        return message.chat.pk
+    def get_chat(self, message):
+        return message.chat.id
 
     class Meta:
         model = Message
