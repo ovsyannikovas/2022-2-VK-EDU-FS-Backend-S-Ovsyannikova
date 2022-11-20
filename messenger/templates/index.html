@@ -1,18 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Главная страница</title>
-</head>
-<body>
-<h1>Главная страница</h1>
+{% extends 'base.html' %}
+{% block title %} Главная страница {% endblock %}
+{% block content %}
     {% if user.is_authenticated %}
-      <p>Logged as {{ user.username }}</p>
-      <a class="btn btn-primary" href="{% url 'logout' %}">Logout</a>
+      <h3>Logged as {{ user.username }}</h3>
+      <a class="btn btn-primary mb-2" href="{% url 'logout' %}">Logout</a>
     {% else %}
-      <a class="btn btn-primary" href="{% url 'social:begin' 'google-oauth2' %}">
+      <a class="btn btn-primary mb-2" href="{% url 'social:begin' 'google-oauth2' %}">
         Login
       </a>
     {% endif %}
-</body>
-</html>
+{% endblock %}
