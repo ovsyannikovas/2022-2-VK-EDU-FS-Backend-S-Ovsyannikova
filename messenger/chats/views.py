@@ -1,6 +1,4 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.decorators.http import require_GET
 from django.shortcuts import render, get_object_or_404
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
@@ -9,8 +7,6 @@ from chats.models import Chat, Message
 from chats.serializers import ChatSerializer, ChatListSerializer, MessageSerializer, ChatSendMessageSerializer
 
 
-@require_GET
-@login_required
 def homepage(request):
     return render(request, "index.html")
 

@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'application.urls'
@@ -69,6 +70,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -117,10 +119,10 @@ AUTHENTICATION_BACKENDS = [
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_URL = 'logout'
-LOGOUT_REDIRECT_URL = 'login'
+LOGOUT_REDIRECT_URL = 'home'
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = Config.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY_SECRET = Config.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY_SECRET
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = Config.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY_SECRET
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
