@@ -33,10 +33,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
 class ChatSendMessageSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    chat = serializers.SerializerMethodField()
-
-    def get_chat(self, message):
-        return message.chat.id
+    # chat = serializers.SerializerMethodField()
 
     class Meta:
         model = Message
