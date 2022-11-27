@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 
+import django.core.mail.backends.smtp
+
 from .config import Config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -123,6 +125,17 @@ LOGOUT_REDIRECT_URL = 'home'
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = Config.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = Config.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY_SECRET
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+
+EMAIL_HOST_USER = Config.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = Config.EMAIL_HOST_PASSWORD
+ADMINS = [Config.ADMIN_EMAIL]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
