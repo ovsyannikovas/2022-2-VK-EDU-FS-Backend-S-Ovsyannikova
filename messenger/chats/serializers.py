@@ -31,9 +31,25 @@ class MessageSerializer(serializers.ModelSerializer):
         fields = 'id', 'user', 'content', 'time_create', 'mark'
 
 
+class MiniChatSerializer(serializers.ModelSerializer):
+    title = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Chat
+        fields = 'id', 'title'
+
+
 class ChatSendMessageSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    # chat = serializers.SerializerMethodField()
+    chat = serializers.SerializerMethodField()
+
+    def get_chat(self, instance):
+        return MiniChatSerializer(instance=instance.chat, context=self.context).data
+
+    def create(self, validated_data):
+        chat = get_object_or_404(Chat, id=self.context['chat'])
+        instance = Message.objects.create(**validated_data, chat=chat)
+        return instance
 
     class Meta:
         model = Message
