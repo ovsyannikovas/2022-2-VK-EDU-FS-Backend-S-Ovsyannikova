@@ -41,7 +41,7 @@ class ChatSendMessage(LoginRequiredMixin, ListCreateAPIView):
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context['chat'] = get_object_or_404(Chat, pk=self.kwargs['pk']).id
+        context['chat'] = self.kwargs['pk']
         return context
 
     def get(self, request, *args, **kwargs):
