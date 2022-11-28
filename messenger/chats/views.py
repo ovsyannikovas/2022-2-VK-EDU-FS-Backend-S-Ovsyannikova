@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from chats.tasks import send_members_email
 
 from chats.models import Chat, Message
 
@@ -18,6 +19,10 @@ def login(request):
 
 class ChatList(LoginRequiredMixin, ListCreateAPIView):
     serializer_class = ChatListSerializer
+
+    def post(self, request, *args, **kwargs):
+        send_members_email.delay()
+        return self.create(request, *args, **kwargs)
 
     def get_queryset(self):
         user_id = self.request.user.id

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'rest_framework',
     'social_django',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
