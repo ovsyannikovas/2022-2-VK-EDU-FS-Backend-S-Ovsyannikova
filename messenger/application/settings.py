@@ -28,7 +28,7 @@ SECRET_KEY = Config.DJANGO_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['laptop-97srsutp', '127.0.0.1']
+ALLOWED_HOSTS = ['laptop-97srsutp', '127.0.0.1', '0.0.0.0']
 
 # Application definition
 
@@ -89,7 +89,7 @@ DATABASES = {
         'NAME': 'chats_db',
         'USER': Config.db_user,
         'PASSWORD': Config.db_pass,
-        'HOST': '127.0.0.1',
+        'HOST': 'postgres',
         'PORT': 5432,
     }
 }
@@ -128,13 +128,20 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = Config.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = Config.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY_SECRET
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.BaseEmailBackend'
+
+# EMAIL_HOST = 'smtp.mail.ru'
+# EMAIL_PORT = 2525
+# EMAIL_USE_TLS = True
+# EMAIL_USE_SSL = False
+
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
-
 EMAIL_HOST_USER = Config.EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = Config.EMAIL_HOST_PASSWORD
+
 ADMINS = [Config.ADMIN_EMAIL]
 
 

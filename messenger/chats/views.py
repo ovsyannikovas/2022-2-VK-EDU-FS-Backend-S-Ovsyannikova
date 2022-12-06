@@ -7,6 +7,7 @@ from chats.tasks import send_members_email
 from chats.models import Chat, Message
 
 from chats.serializers import ChatSerializer, ChatListSerializer, MessageSerializer, ChatSendMessageSerializer
+from chats.utils import publish_message
 
 
 def homepage(request):
@@ -17,12 +18,23 @@ def login(request):
     return render(request, 'login.html')
 
 
+def new_message(request):
+    # .delay()
+    publish_message(request.GET.get('text'))
+    return JsonResponse({})
+
+
+def homepage2(request):
+    return render(request, "index2.html")
+
+
 class ChatList(LoginRequiredMixin, ListCreateAPIView):
     serializer_class = ChatListSerializer
 
     def post(self, request, *args, **kwargs):
+        chat = self.create(request, *args, **kwargs)
         send_members_email.delay()
-        return self.create(request, *args, **kwargs)
+        return chat
 
     def get_queryset(self):
         user_id = self.request.user.id
