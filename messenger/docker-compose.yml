@@ -21,8 +21,7 @@ services:
     ports:
       - "9000:9000"
     container_name: django_app
-    build:
-      context: .
+    build: .
     command: bash -c "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:9000"
     depends_on:
       postgres:
