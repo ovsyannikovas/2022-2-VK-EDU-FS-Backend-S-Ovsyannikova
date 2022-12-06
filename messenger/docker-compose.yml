@@ -1,0 +1,32 @@
+version: '2.1'
+
+services:
+  postgres:
+    image: postgres:12.0
+    environment:
+      - POSTGRES_USER=chat_user
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=chats_db
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U chat_user -d chats_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    container_name: postgres
+  django_app:
+    ports:
+      - "9000:9000"
+    container_name: django_app
+    build:
+      context: .
+    command: bash -c "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:9000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
